@@ -233,24 +233,44 @@ def extract_document_metadata(doc_name: str, full_text: str, clauses: List[Claus
     )
     effective_date = date_match.group(1) if date_match else "Not explicitly stated"
 
-    # Parties detection
+    # Parties detection: Extract both parties cleanly with their designations
     parties = []
-    party_matches = re.findall(
-        r"(?:between|by and between)\s+([A-Z][A-Za-z0-9\s,\.]{3,40}?)(?:\s*,|\s+hereinafter|\s+and|\s*\()",
-        full_text
-    )
-    for p in party_matches[:2]:
-        p_clean = p.strip().strip(",")
-        if p_clean and len(p_clean) > 3 and p_clean not in parties:
-            parties.append(p_clean)
-
-    # Governing law / Jurisdiction
-    gov_match = re.search(
-        r"(?:governed by|construed in accordance with|jurisdiction of)\s+([^.\n]{10,80})",
+    parties_block_match = re.search(
+        r"(?:by and between|between)\s+([^,]+?)(?:,\s*residing[^\(\)]*|\s*,\s*an?\s+[A-Za-z\s]+company[^\(\)]*|\s*,\s*having[^\(\)]*)?\s*\(\s*[\"']([^\"']+)[\"']\s*(?:or\s*[\"'][^\"']+[\"'])?\s*\)\s*,?\s*and\s+([^,]+?)(?:,\s*residing[^\(\)]*|\s*,\s*currently\s+residing[^\(\)]*)?\s*\(\s*[\"']([^\"']+)[\"']\s*(?:or\s*[\"'][^\"']+[\"'])?\s*\)",
         full_text,
         re.IGNORECASE,
     )
-    governing_law = gov_match.group(0).strip() if gov_match else "Not explicitly stated in standard clause"
+    if parties_block_match:
+        p1_name = parties_block_match.group(1).strip()
+        p1_role = parties_block_match.group(2).strip()
+        p2_name = parties_block_match.group(3).strip()
+        p2_role = parties_block_match.group(4).strip()
+        parties.append(f"{p1_name} ({p1_role})")
+        parties.append(f"{p2_name} ({p2_role})")
+    else:
+        # Fallback to broader entity extraction
+        party_matches = re.findall(
+            r"(?:between|by and between|and)\s+([A-Z][A-Za-z0-9\s,\.]{3,40}?)(?:\s*,|\s+hereinafter|\s*\()",
+            full_text,
+        )
+        for p in party_matches:
+            p_clean = p.strip().strip(",")
+            if p_clean and len(p_clean) > 3 and not any(p_clean in existing for existing in parties):
+                parties.append(p_clean)
+            if len(parties) >= 2:
+                break
+
+    # Governing law / Jurisdiction (strip trailing punctuation and commas cleanly)
+    gov_match = re.search(
+        r"(?:governed by|construed in accordance with|jurisdiction of)\s+([^\n\.]+)",
+        full_text,
+        re.IGNORECASE,
+    )
+    governing_law = (
+        gov_match.group(0).strip().rstrip(",;.").strip()
+        if gov_match
+        else "Not explicitly stated in standard clause"
+    )
 
     # Notice periods
     notice_matches = re.findall(
@@ -260,13 +280,18 @@ def extract_document_metadata(doc_name: str, full_text: str, clauses: List[Claus
     )
     notice_periods = list(set(notice_matches))[:3]
 
-    # Financial penalties / security deposit
+    # Financial penalties / security deposit (capture full phrases without mid-word cutoffs)
     penalty_matches = re.findall(
-        r"(?:penalty of|interest at|liquidated damages of|security deposit of|fine of)\s+([^\n\.]{5,50})",
+        r"(?:penalty of|interest at|liquidated damages[^\n\.;]*?(?:of|to)|security deposit of|fine of)\s+([^\n\.;]+)",
         full_text,
         re.IGNORECASE,
     )
-    penalties = [p.strip() for p in penalty_matches[:3]]
+    penalties = []
+    for p in penalty_matches:
+        cleaned = re.sub(r"\s+", " ", p).strip().rstrip(",;.")
+        if cleaned and len(cleaned) > 2 and cleaned not in penalties:
+            penalties.append(cleaned)
+    penalties = penalties[:3]
 
     # Lock-in period
     lock_in_matches = re.findall(

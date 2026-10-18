@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import LandingPage from './components/LandingPage';
-import WorkspaceView from './components/WorkspaceView';
+import LandingShowcase from './components/LandingShowcase';
+import SpatialStudio from './components/SpatialStudio';
 import Toast from './components/Toast';
 import LiquidRetinaWipeModal from './components/LiquidRetinaWipeModal';
 import {
@@ -69,12 +69,12 @@ export default function App() {
       const data = await res.json();
       setDocumentData(data);
 
-      // Smooth transition to Stage 2 Workspace
+      // Smooth transition to Stage 2 Spatial Studio
       setTimeout(() => {
         setIsProcessing(false);
         setCurrentView('workspace');
         setToast({ message: `Loaded ${file.name || 'document'} successfully.`, type: 'success' });
-      }, 950);
+      }, 850);
     } catch (err) {
       clearTimeout(stepTimer1);
       clearTimeout(stepTimer2);
@@ -148,7 +148,7 @@ export default function App() {
   return (
     <>
       {currentView === 'landing' ? (
-        <LandingPage
+        <LandingShowcase
           onLoadSample={handleLoadSample}
           onUploadFile={uploadAndProcessFile}
           isSessionActive={Boolean(documentData && documentData.clauses?.length > 0)}
@@ -158,7 +158,7 @@ export default function App() {
           processingStep={processingStep}
         />
       ) : (
-        <WorkspaceView
+        <SpatialStudio
           documentData={documentData}
           onBackToLanding={() => setCurrentView('landing')}
           onWipeSession={handlePromptWipeSession}

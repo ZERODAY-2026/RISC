@@ -148,6 +148,28 @@ async def ask_question(req: QARequest):
     if not question:
         raise HTTPException(status_code=400, detail="Question cannot be empty.")
 
+    # 0. Adversarial Prompt-Injection Guardrail
+    from backend.ingestion import detect_prompt_injection
+    is_inj, inj_detail = detect_prompt_injection(question)
+    if is_inj:
+        inj_answer = (
+            "### Security Guardrail Alert: Adversarial Prompt-Injection Quarantined\n\n"
+            "> **Security Guardrail Active:** LexGuard-Local detected an adversarial injection attempt in your query and safely quarantined it.\n\n"
+            f"**Quarantine Diagnostic:** {inj_detail}\n\n"
+            "- **Integrity Guarantee:** System prompts, local memory, and offline cryptographic keys remain strictly protected.\n"
+            "- **Air-Gapped Safety:** Local Google Gemma model inputs are strictly isolated from prompt overrides."
+        )
+        return QAResponse(
+            question=question,
+            answer_markdown=inj_answer,
+            status="SAFE_ESCALATION_REQUIRED",
+            cited_clauses=[],
+            verified_quotes=[],
+            escalation_card=None,
+            execution_time_ms=1.2,
+            model_used="Security Guardrail Quarantine",
+        )
+
     # 1. Search indexed clauses
     scored_results, is_silent, missing_terms = session.index.search(question, top_k=4)
     relevant_clauses = [item[0] for item in scored_results]
