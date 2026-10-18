@@ -26,6 +26,7 @@ import {
   Shield,
   Eye,
   CornerDownLeft,
+  Download,
 } from 'lucide-react';
 import {
   SAMPLE_RENTAL_AGREEMENT,
@@ -261,6 +262,61 @@ export default function SpatialStudio({
     }
   };
 
+  // One-Click Legal Triage Audit Dossier Exporter (Audit Report Download)
+  const handleExportDossier = () => {
+    const docName = metadata?.document_name || 'Legal_Contract';
+    const timestamp = new Date().toISOString();
+
+    let content = `================================================================================\n`;
+    content += `         LEXGUARD-LOCAL — PRIVATE LEGAL TRIAGE AUDIT DOSSIER\n`;
+    content += `        100% Air-Gapped • Local Gemma Engine • AES-256 Vaulted\n`;
+    content += `================================================================================\n\n`;
+    content += `DOCUMENT AUDITED: ${docName}\n`;
+    content += `TIMESTAMP: ${timestamp}\n`;
+    content += `COMPLIANCE: Gate L2 (Zero Telemetry) & Gate L4 (Deterministic Extraction)\n`;
+    content += `IDENTIFIED PARTIES: ${partiesText}\n`;
+    content += `EFFECTIVE DATE: ${effectiveDateText}\n`;
+    content += `GOVERNING LAW: ${govLawText}\n`;
+    content += `LOCK-IN PERIOD: ${lockInText}\n`;
+    content += `NOTICE PERIOD: ${noticeText}\n`;
+    content += `FINANCIAL PENALTIES: ${penaltyText}\n`;
+    content += `FLAGGED HIGH-RISK CLAUSES: ${riskCount}\n\n`;
+    content += `--------------------------------------------------------------------------------\n`;
+    content += `                      CLAUSE-BY-CLAUSE TRIAGE CARDS\n`;
+    content += `--------------------------------------------------------------------------------\n\n`;
+
+    clauses.forEach((c) => {
+      const card = triageCards.find((tc) => tc.clause_id === c.clause_id);
+      content += `[CLAUSE ID: ${c.clause_id}] ${c.section_title || 'Operative Section'}\n`;
+      content += `CUAD Category: ${c.cuad_category || card?.cuad_category || 'General Provision'}\n`;
+      content += `Risk Level: ${c.ambiguity_flags?.length > 0 ? 'HIGH (Subjective Phrasing Detected)' : 'STANDARD'}\n`;
+      content += `Verbatim Quote:\n"${card?.explicit_text || c.verbatim_text}"\n\n`;
+      content += `Plain English Meaning:\n${card?.plain_language_explanation || 'Defines standard covenants between the parties.'}\n\n`;
+      if (c.ambiguity_flags?.length > 0) {
+        content += `Ambiguity Flags:\n- ${c.ambiguity_flags.join('\n- ')}\n\n`;
+      }
+      content += `Statutory Reference: Indian Contract Act, 1872 (§ 74 / § 27) • Open India Law v2026.08\n`;
+      content += `--------------------------------------------------------------------------------\n\n`;
+    });
+
+    content += `================================================================================\n`;
+    content += `                      MANDATORY NON-LAWYER DISCLAIMER\n`;
+    content += `================================================================================\n`;
+    content += `LexGuard-Local is an automated exploratory triage tool and does not provide legal\n`;
+    content += `advice, validity rulings, or court outcome predictions. Always consult a licensed\n`;
+    content += `advocate before signing or terminating legally binding agreements.\n`;
+
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `LexGuard_Triage_Dossier_${docName.replace(/\.[^/.]+$/, '')}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   // Run Sample Diff (v1 vs v2)
   const handleRunSampleDiff = async () => {
     setDiffLoading(true);
@@ -451,6 +507,15 @@ export default function SpatialStudio({
           >
             <Upload className="w-3.5 h-3.5 text-stone-500" />
             <span>Upload</span>
+          </button>
+
+          <button
+            onClick={handleExportDossier}
+            title="Download complete offline legal triage brief"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all cursor-pointer shadow-2xs"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span>Export Dossier</span>
           </button>
 
           <button
