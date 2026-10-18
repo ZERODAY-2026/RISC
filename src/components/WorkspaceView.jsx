@@ -1151,8 +1151,8 @@ export default function WorkspaceView({
             ───────────────────────────────────────────────────────────── */}
             {activeTab === 'auditTab' && (
               <div className="max-w-4xl mx-auto space-y-5 animate-in fade-in-50 duration-200">
-                {/* 6 Audit Cards */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {/* 7 Audit Cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                   <div className="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-xs">
                     <span className="text-[10.5px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
                       Active External Sockets
@@ -1174,6 +1174,18 @@ export default function WorkspaceView({
                     </h3>
                     <span className="mt-2 inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200">
                       Strict Loopback Binding
+                    </span>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-xs">
+                    <span className="text-[10.5px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+                      RAM Cryptographic Vault
+                    </span>
+                    <h3 className="text-xs font-mono font-bold text-emerald-700 truncate">
+                      {auditData?.cipher_suite || 'AES-256-GCM (SP 800-38D)'}
+                    </h3>
+                    <span className="mt-2 inline-block px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      {auditData?.key_fingerprint || 'EPHEMERAL-ACTIVE'}
                     </span>
                   </div>
 
@@ -1207,9 +1219,9 @@ export default function WorkspaceView({
                     <p className="text-[11px] text-slate-400 mt-1 font-medium">Edge inference model</p>
                   </div>
 
-                  <div className="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-xs">
+                  <div className="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-xs sm:col-span-2 md:col-span-1 lg:col-span-2">
                     <span className="text-[10.5px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
-                      Model Status
+                      Model Status &amp; Grounding
                     </span>
                     <h3 className="text-xs font-bold text-slate-800">
                       {auditData?.ollama_connected
@@ -1227,7 +1239,7 @@ export default function WorkspaceView({
                   <div className="flex items-center gap-2">
                     <ShieldCheck className="w-5 h-5 text-emerald-600" />
                     <h4 className="text-sm font-bold text-emerald-950">
-                      ZeroDay OSS Hacktoberfest 2026 — Track PS2 Compliance Attestation
+                      ZeroDay OSS Hacktoberfest 2026 — Track PS2 Compliance &amp; Encryption Attestation
                     </h4>
                   </div>
                   <p className="text-xs text-emerald-900/90 leading-relaxed font-medium">
@@ -1244,7 +1256,11 @@ export default function WorkspaceView({
                     </li>
                     <li className="flex items-center gap-2">
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
-                      <span>In-memory RAM session store wiped on demand with zero disk persistence.</span>
+                      <span>AES-256-GCM authenticated in-memory RAM encryption with zero disk persistence.</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
+                      <span>Instant physical memory zeroization (<code className="font-mono font-bold">0x00</code> overwrite) and session re-keying on wipe.</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />

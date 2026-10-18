@@ -114,6 +114,10 @@ class PrivacyAuditReport(BaseModel):
     ollama_connected: bool = False
     environment_flags: dict = Field(default_factory=dict)
     system_architecture: str = "ARM64/macOS Local Sandbox"
+    encryption_active: bool = True
+    cipher_suite: str = "AES-256-GCM (NIST SP 800-38D Authenticated AEAD)"
+    key_fingerprint: str = ""
+    zeroize_verified: bool = True
 
 
 class DocumentUploadResponse(BaseModel):

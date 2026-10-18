@@ -1,4 +1,4 @@
-# Environments and venv
+# Environments and virtualenvs
 venv/
 .venv/
 env/
@@ -6,7 +6,7 @@ env/
 *.env
 *.local
 
-# Python cache & artifacts
+# Python cache & test artifacts
 __pycache__/
 *.py[cod]
 *$py.class
@@ -16,6 +16,8 @@ __pycache__/
 htmlcov/
 dist/
 build/
+*.egg-info/
+
 # Node & Build artifacts
 node_modules/
 .vite/
@@ -24,7 +26,11 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# Sensitive data, uploaded user documents, and private logs
+# Logs and temporary verification output
+*.log
+privacy_audit_verification.log
+
+# Sensitive data, uploaded user documents, and private keys
 uploads/
 temp_contracts/
 *.private.txt
@@ -34,7 +40,7 @@ temp_contracts/
 *.token
 *.secret
 
-# OS artifacts
+# OS & Editor artifacts
 .DS_Store
 Thumbs.db
 .idea/

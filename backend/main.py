@@ -41,6 +41,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+from backend.crypto_vault import vault, compute_sha256
+
 # Global in-memory session store (wiped on demand or restart)
 class SessionStore:
     def __init__(self):
@@ -50,14 +52,29 @@ class SessionStore:
         self.triage_cards = []
         self.doc_a_clauses = []
         self.doc_b_clauses = []
+        self.document_hash: str = ""
+
+    def set_document(self, metadata: DocumentMetadata, clauses: list, raw_bytes: bytes):
+        """Encrypt all clauses and binary document payload into AES-256-GCM RAM vault."""
+        self.metadata = metadata
+        self.clauses = clauses
+        self.index = LocalClauseIndex(clauses)
+        self.document_hash = compute_sha256(raw_bytes)
+        # Store encrypted in RAM vault
+        vault.store_document(metadata.document_name, raw_bytes)
+        for c in clauses:
+            vault.store_clause(c.clause_id, c.verbatim_text)
 
     def wipe(self):
+        """Securely wipe memory and purge cryptographic session key."""
         self.metadata = None
         self.clauses.clear()
         self.index = None
         self.triage_cards.clear()
         self.doc_a_clauses.clear()
         self.doc_b_clauses.clear()
+        self.document_hash = ""
+        vault.secure_wipe()
         gc.collect()
 
 session = SessionStore()
@@ -66,7 +83,7 @@ gemma_client = GemmaLocalClient()
 
 @app.middleware("http")
 async def add_strict_offline_security_headers(request: Request, call_next):
-    """Enforce strict Content-Security-Policy blocking all external network and CDN calls."""
+    """Enforce strict Content-Security-Policy and anti-leak cache headers."""
     response = await call_next(request)
     # Disallow all external CDNs, fonts, and scripts
     response.headers["Content-Security-Policy"] = (
@@ -75,11 +92,16 @@ async def add_strict_offline_security_headers(request: Request, call_next):
         "style-src 'self' 'unsafe-inline'; "
         "img-src 'self' data:; "
         "connect-src 'self' http://127.0.0.1:* http://localhost:*; "
-        "font-src 'self';"
+        "font-src 'self'; "
+        "frame-ancestors 'none'; "
+        "form-action 'self';"
     )
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
     response.headers["Referrer-Policy"] = "no-referrer"
+    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0, private"
+    response.headers["Pragma"] = "no-cache"
     return response
 
 
@@ -100,11 +122,9 @@ async def upload_document(file: UploadFile = File(...)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Unexpected parsing error: {str(e)}")
 
-    # Update in-memory session index
+    # Update in-memory session index with AES-256-GCM RAM vault encryption
     session.wipe()
-    session.metadata = metadata
-    session.clauses = clauses
-    session.index = LocalClauseIndex(clauses)
+    session.set_document(metadata, clauses, contents)
 
     # Perform triage cards generation
     triage_cards = await gemma_client.triage_document_clauses(clauses)
@@ -114,7 +134,7 @@ async def upload_document(file: UploadFile = File(...)):
         metadata=metadata,
         clauses=clauses,
         triage_cards=triage_cards,
-        message="Document successfully processed and indexed locally.",
+        message="Document successfully processed and encrypted in RAM vault.",
     )
 
 

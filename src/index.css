@@ -1327,3 +1327,122 @@ body {
   max-width: 320px;
   margin: 0 auto;
 }
+
+/* ==============================================================================
+   3D PERSPECTIVE & SPATIAL ANIMATION SYSTEM
+   ============================================================================== */
+
+.perspective-800 {
+  perspective: 800px;
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.perspective-1200 {
+  perspective: 1200px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+}
+
+.translate-z-10 {
+  transform: translateZ(10px);
+}
+
+.translate-z-20 {
+  transform: translateZ(20px);
+}
+
+.translate-z-30 {
+  transform: translateZ(30px);
+}
+
+.translate-z-40 {
+  transform: translateZ(40px);
+}
+
+.translate-z-50 {
+  transform: translateZ(50px);
+}
+
+@keyframes float3d {
+  0%, 100% {
+    transform: translateY(0px) rotateX(0deg) rotateY(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotateX(2deg) rotateY(-3deg);
+  }
+}
+
+@keyframes isoFloatSlow {
+  0%, 100% {
+    transform: rotateX(50deg) rotateZ(-30deg) translateZ(0px);
+  }
+  50% {
+    transform: rotateX(50deg) rotateZ(-30deg) translateZ(16px);
+  }
+}
+
+@keyframes spinOrbitalSlow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spinOrbitalReverse {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes pulseHalo {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(0.95);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.08);
+  }
+}
+
+.animate-float-3d {
+  animation: float3d 5s ease-in-out infinite;
+}
+
+.animate-iso-float {
+  animation: isoFloatSlow 6s ease-in-out infinite;
+}
+
+.animate-orbit-slow {
+  animation: spinOrbitalSlow 28s linear infinite;
+}
+
+.animate-orbit-reverse {
+  animation: spinOrbitalReverse 20s linear infinite;
+}
+
+.animate-pulse-halo {
+  animation: pulseHalo 4s ease-in-out infinite;
+}
+
+.sheen-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  transition: opacity 0.3s ease;
+}
