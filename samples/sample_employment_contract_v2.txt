@@ -1,0 +1,26 @@
+EXECUTIVE EMPLOYMENT AGREEMENT (REVISED VERSION 2)
+
+This Employment Agreement ("Agreement") is executed on 15th April 2026, by and between Apex Systems Private Limited, an Indian company with registered office in Electronic City, Bengaluru ("Company"), and Mr. Vikram Malhotra ("Employee").
+
+1. APPOINTMENT AND PROBATION
+The Company appoints the Employee as Principal Software Architect. The probation period is extended to 6 months.
+
+2. INTELLECTUAL PROPERTY ASSIGNMENT
+The Employee agrees that all inventions, source code, and improvements developed during employment or within 6 months post-termination relating to Company projects shall remain the exclusive property of the Company.
+
+3. NON-COMPETE COVENANTS
+During employment and for an extended period of 24 months post-termination, the Employee shall not engage with or consult for any competing software firm globally.
+
+4. CONFIDENTIALITY AND TRADE SECRETS
+The Employee shall at all times maintain absolute secrecy regarding Company proprietary assets.
+
+5. TERMINATION AND NOTICE PERIOD
+Notice period is reduced to 30 days for the Company, but remains 90 days for the Employee.
+
+6. LIQUIDATED DAMAGES FOR EARLY DEPARTURE
+Liquidated damages for early departure are increased to INR 5,00,000/-.
+
+7. MANDATORY ARBITRATION AND GOVERNING LAW
+All disputes shall be referred to sole arbitration in Bengaluru governed by the Arbitration and Conciliation Act, 1996.
+
+IN WITNESS WHEREOF, the parties execute this Agreement.

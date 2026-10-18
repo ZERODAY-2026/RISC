@@ -1,0 +1,69 @@
+================================================================================
+    LexGuard-Local: Private Legal Document Triage Agent — Privacy Audit Log    
+    ZeroDay OSS Hacktoberfest 2026 • Track PS2 Compliance                      
+================================================================================
+Timestamp: 2026-10-18 05:58:22Z
+Host Machine: Darwin arm64
+
+>>> [1/5] Verifying Hardcoded Offline & Telemetry-Free Environment Flags...
+NO_PROXY=127.0.0.1,localhost
+HF_HUB_OFFLINE=1
+TRANSFORMERS_OFFLINE=1
+ANONYMIZED_TELEMETRY=False
+DO_NOT_TRACK=1
+  [PASS] All offline environment guardrails active.
+
+>>> [2/5] Running Automated Guardrail & Substring Grounding Test Suite...
+============================= test session starts ==============================
+platform darwin -- Python 3.11.15, pytest-9.1.1, pluggy-1.7.0 -- /Users/rachityadav/Desktop/ps2/venv/bin/python3.11
+cachedir: .pytest_cache
+rootdir: /Users/rachityadav/Desktop/ps2
+configfile: pyproject.toml
+plugins: asyncio-1.4.0, anyio-4.15.1
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 10 items
+
+tests/test_ingestion_and_diff.py::test_pdf_ingestion_and_clause_segmentation PASSED [ 10%]
+tests/test_ingestion_and_diff.py::test_contract_diff_engine PASSED       [ 20%]
+tests/test_ingestion_and_diff.py::test_session_wipe_purges_memory PASSED [ 30%]
+tests/test_ps2_compliance.py::test_network_isolation_during_processing PASSED [ 40%]
+tests/test_ps2_compliance.py::test_deterministic_quote_verification PASSED [ 50%]
+tests/test_ps2_compliance.py::test_document_is_silent_detection PASSED   [ 60%]
+tests/test_ps2_compliance.py::test_safe_escalation_intent_and_card PASSED [ 70%]
+tests/test_ps2_compliance.py::test_adversarial_prompt_injection_defense PASSED [ 80%]
+tests/test_ps2_compliance.py::test_malformed_and_empty_inputs PASSED     [ 90%]
+tests/test_ps2_compliance.py::test_end_to_end_qa_flow PASSED             [100%]
+
+=============================== warnings summary ===============================
+<frozen importlib._bootstrap>:241
+<frozen importlib._bootstrap>:241
+  <frozen importlib._bootstrap>:241: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:241
+<frozen importlib._bootstrap>:241
+  <frozen importlib._bootstrap>:241: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:241
+  <frozen importlib._bootstrap>:241: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 10 passed, 5 warnings in 0.41s ========================
+  [PASS] 100% of compliance, grounding, silence, and refusal tests passed.
+
+>>> [3/5] Inspecting Network Sockets for Active Process...
+Inspecting PID 16514 (Python) network connections...
+VERIFIED: 0 external sockets found. Process is strictly air-gapped.
+  [PASS] Process network isolation verified.
+
+>>> [4/5] Checking Local Ollama Daemon Status...
+  [STATUS] Ollama daemon not running. Local Deterministic Fallback Engine active.
+  (The system runs 100% locally with high-precision grounding in both modes).
+
+>>> [5/5] Testing In-Memory RAM Wipe Purge...
+VERIFIED: In-memory store wiped with zero sensitive residue.
+  [PASS] RAM session wipe confirmed.
+
+================================================================================
+    AUDIT SUMMARY: ALL PASS/FAIL GATES (G1-G5, L1-L4) SATISFIED!              
+    Verification report written to: /Users/rachityadav/Desktop/ps2/privacy_audit_verification.log                                
+================================================================================
