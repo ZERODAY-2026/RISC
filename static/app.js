@@ -405,8 +405,8 @@ document.addEventListener("DOMContentLoaded", () => {
       renderQAResult(data);
     } catch (err) {
       qaResponseContainer.innerHTML = `
-        <div class="qa-card" style="border-color:var(--status-danger)">
-          <strong>Error:</strong> ${escapeHtml(err.message)}
+        <div class="qa-card" style="border-color:var(--red);">
+          <strong style="color:var(--red);">Error:</strong> ${escapeHtml(err.message)}
         </div>
       `;
     }
@@ -428,7 +428,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (data.cited_clauses && data.cited_clauses.length > 0) {
       citationsHtml = `
         <div class="qa-citations">
-          <span style="font-size:0.75rem;color:var(--text-muted);">Cited Grounding:</span>
+          <span class="qa-cite-label">Grounded in:</span>
           ${data.cited_clauses.map((c_id) => `<button class="qa-cite-btn" onclick="highlightAndScroll('${c_id}')">${c_id}</button>`).join(" ")}
         </div>
       `;
@@ -459,10 +459,11 @@ document.addEventListener("DOMContentLoaded", () => {
     qaResponseContainer.innerHTML = `
       <div class="qa-card">
         <div class="qa-card-header">
+          <span class="qa-question-text">${escapeHtml(data.question || '')}</span>
           <span class="qa-status-pill ${statusClass}">${statusLabel}</span>
-          <span style="font-size:0.75rem;color:var(--text-muted);">${data.model_used} &bull; ${data.execution_time_ms}ms</span>
         </div>
-        <div class="qa-markdown" style="font-size:0.88rem;line-height:1.6;color:var(--text-main);white-space:pre-wrap;">${escapeHtml(data.answer_markdown)}</div>
+        <div class="qa-answer-text" style="white-space:pre-wrap;">${escapeHtml(data.answer_markdown)}</div>
+        <p class="metric-sub" style="margin-top:6px;">${escapeHtml(data.model_used)} &bull; ${data.execution_time_ms}ms</p>
         ${escalationHtml}
         ${citationsHtml}
       </div>
@@ -507,7 +508,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const diff = await res.json();
       renderDiffResults(diff);
     } catch (err) {
-      diffResultsArea.innerHTML = `<div class="empty-state" style="color:var(--status-danger)">Diff Error: ${escapeHtml(err.message)}</div>`;
+      diffResultsArea.innerHTML = `<div class="empty-state" style="color:var(--red);">Diff Error: ${escapeHtml(err.message)}</div>`;
     }
   });
 
@@ -574,14 +575,14 @@ document.addEventListener("DOMContentLoaded", () => {
                   <strong>${escapeHtml(m.section_title)}</strong>
                   <span class="diff-pill ${pillClass}">${m.status}</span>
                 </div>
-                <div style="font-size:0.75rem;color:var(--status-warning);margin:4px 0;">${escapeHtml(m.risk_delta || "")}</div>
+                <div style="font-size:0.75rem;color:var(--amber);margin:4px 0;">${escapeHtml(m.risk_delta || "")}</div>
                 <div class="diff-side-by-side">
                   <div class="diff-version-col">
-                    <span style="font-size:0.72rem;color:var(--text-muted);display:block;margin-bottom:4px;">VERSION A</span>
+                    <span style="font-size:0.67rem;font-weight:700;text-transform:uppercase;color:var(--ink-30);letter-spacing:0.05em;display:block;margin-bottom:4px;">VERSION A</span>
                     ${m.text_a ? escapeHtml(m.text_a) : '<span class="text-muted">(Not present)</span>'}
                   </div>
                   <div class="diff-version-col">
-                    <span style="font-size:0.72rem;color:var(--text-muted);display:block;margin-bottom:4px;">VERSION B</span>
+                    <span style="font-size:0.67rem;font-weight:700;text-transform:uppercase;color:var(--ink-30);letter-spacing:0.05em;display:block;margin-bottom:4px;">VERSION B</span>
                     ${m.text_b ? escapeHtml(m.text_b) : '<span class="text-muted">(Not present)</span>'}
                   </div>
                 </div>
