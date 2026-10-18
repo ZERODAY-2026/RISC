@@ -212,3 +212,102 @@ async def test_end_to_end_qa_flow(employment_document):
     assert status_e == "SAFE_ESCALATION_REQUIRED"
     assert card_e is not None
     assert len(card_e.questions_for_lawyer) == 3
+
+
+# ==============================================================================
+# TEST 8: RESOURCE 1 — CUAD 41-CATEGORY CLASSIFICATION & EXPERT BENCHMARK
+# ==============================================================================
+def test_cuad_classification_and_expert_benchmark():
+    """Verify official CUAD 41-category taxonomy and 100% expert label match on commercial benchmark."""
+    import json
+    from backend.datasets import CUAD_41_CATEGORIES, CUAD_CAVEAT, classify_cuad_category
+
+    assert len(CUAD_41_CATEGORIES) == 41
+    assert "Non-Compete" in CUAD_41_CATEGORIES
+    assert "Liquidated Damages" in CUAD_41_CATEGORIES
+    assert "IP Ownership Assignment" in CUAD_41_CATEGORIES
+    assert "Cap On Liability" in CUAD_41_CATEGORIES
+
+    bench_path = SAMPLES_DIR / "reference_benchmarks" / "cuad_commercial_contract_sample.txt"
+    gt_path = SAMPLES_DIR / "reference_benchmarks" / "cuad_ground_truth.json"
+
+    meta, clauses = ingest_document("cuad_commercial_contract_sample.txt", bench_path.read_bytes())
+    assert meta.is_cuad_benchmark is True
+    assert meta.cuad_caveat == CUAD_CAVEAT
+
+    gt = json.loads(gt_path.read_text(encoding="utf-8"))
+    labels = gt["expert_labels"]
+    matches = 0
+
+    for idx, label in enumerate(labels):
+        clause = clauses[idx + 2]  # First two clauses are title and preamble
+        predicted = classify_cuad_category(clause.verbatim_text, clause.section_title)
+        expected = label["expected_category"]
+        if predicted == expected:
+            matches += 1
+
+    assert matches == len(labels)
+    assert (matches / len(labels)) == 1.0
+
+
+# ==============================================================================
+# TEST 9: RESOURCE 2 — INDIA CODE STATUTORY SECTION CITATION MAPPING
+# ==============================================================================
+def test_india_code_statutory_section_citation_mapping():
+    """Verify statutory section mapping (Contract Act § 27/74, TPA § 106) without legal validity verdicts."""
+    from backend.datasets import match_india_code_context, INDIA_CODE_CAVEAT
+
+    # 1. Non-compete maps to Section 27
+    nc_ref = match_india_code_context(
+        "Employee covenants not to compete or engage in any competing software firm for 12 months.",
+        "Non-Compete"
+    )
+    assert nc_ref is not None
+    assert nc_ref["act"] == "Indian Contract Act, 1872"
+    assert nc_ref["section"] == "Section 27"
+    assert "restraint of trade" in nc_ref["subject"].lower()
+
+    # 2. Liquidated damages maps to Section 74
+    ld_ref = match_india_code_context(
+        "Party shall pay liquidated damages of INR 5,000,000 as pre-estimate of loss.",
+        "Liquidated Damages"
+    )
+    assert ld_ref is not None
+    assert ld_ref["act"] == "Indian Contract Act, 1872"
+    assert ld_ref["section"] == "Section 74"
+
+    # 3. Lease notice maps to Transfer of Property Act Section 106
+    lease_ref = match_india_code_context(
+        "Either party may terminate the tenancy lease upon giving 30 days notice.",
+        None
+    )
+    assert lease_ref is not None
+    assert lease_ref["act"] == "Transfer of Property Act, 1882"
+    assert "Section 106" in lease_ref["section"]
+
+    # 4. Mandatory caveat is strictly enforced
+    assert "Statutes are not contracts, may be amended, and LexGuard-Local never derives legal validity conclusions" in INDIA_CODE_CAVEAT
+
+
+# ==============================================================================
+# TEST 10: RESOURCE 3 — OPEN INDIA LAW DISPUTE RETRIEVAL & CAVEAT ENFORCEMENT
+# ==============================================================================
+def test_open_india_law_dispute_retrieval_and_caveat():
+    """Verify Open India Law (v2026.08) historical judicial retrieval and non-advice boundary."""
+    from backend.datasets import match_open_india_law_context, OPEN_INDIA_LAW_CAVEAT
+
+    # 1. Non-compete dispute retrieval
+    oil_nc = match_open_india_law_context("Employee post-termination non-compete covenant", "Non-Compete")
+    assert oil_nc is not None
+    assert "Zaheer Khan" in oil_nc.get("landmark_precedent", "") or "Golikari" in oil_nc.get("landmark_precedent", "")
+    assert "Section 27" in oil_nc.get("statutory_provision", "")
+    assert oil_nc.get("advocate_action") is not None
+
+    # 2. Penalty / Liquidated damages dispute retrieval
+    oil_ld = match_open_india_law_context("Stipulated liquidated damages and forfeiture of wages", "Liquidated Damages")
+    assert oil_ld is not None
+    assert "Kailash Nath" in oil_ld.get("landmark_precedent", "") or "Fateh Chand" in oil_ld.get("landmark_precedent", "")
+
+    # 3. Mandatory caveat presence
+    assert "Historical point-in-time snapshot" in OPEN_INDIA_LAW_CAVEAT
+    assert "not current law and not legal advice" in OPEN_INDIA_LAW_CAVEAT

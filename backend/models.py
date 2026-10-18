@@ -12,6 +12,7 @@ class Clause(BaseModel):
     char_start: int = Field(default=0, description="Character offset start in document")
     char_end: int = Field(default=0, description="Character offset end in document")
     ambiguity_flags: List[str] = Field(default_factory=list, description="Detected subjective legalese phrases")
+    cuad_category: Optional[str] = Field(default=None, description="Official CUAD 41-category taxonomy match")
 
 
 class DocumentMetadata(BaseModel):
@@ -29,6 +30,8 @@ class DocumentMetadata(BaseModel):
     financial_penalties: List[str] = Field(default_factory=list)
     lock_in_periods: List[str] = Field(default_factory=list)
     high_risk_clauses_count: int = 0
+    is_cuad_benchmark: bool = False
+    cuad_caveat: Optional[str] = None
 
 
 class TriageCard(BaseModel):
@@ -50,6 +53,10 @@ class TriageCard(BaseModel):
         "UNVERIFIED_CITATION"
     ] = "VERIFIED_EXACT_QUOTE"
     severity: Literal["LOW", "MEDIUM", "HIGH"] = "LOW"
+    cuad_category: Optional[str] = None
+    cuad_caveat: Optional[str] = None
+    india_code_ref: Optional[dict] = None
+    open_india_law_context: Optional[dict] = None
 
 
 class SafeEscalationCard(BaseModel):
@@ -63,6 +70,12 @@ class SafeEscalationCard(BaseModel):
     questions_for_lawyer: List[str] = Field(
         default_factory=list,
         description="Concrete, actionable questions to take to a qualified legal advocate"
+    )
+    india_code_citation: Optional[dict] = None
+    open_india_law_context: Optional[dict] = None
+    statutory_non_lawyer_disclaimer: str = (
+        "Statutes and court precedents provide legislative/judicial context and get amended; "
+        "LexGuard-Local never derives legal validity conclusions from them."
     )
 
 

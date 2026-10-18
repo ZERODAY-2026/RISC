@@ -6,6 +6,8 @@ import {
   SAMPLE_RENTAL_AGREEMENT,
   SAMPLE_EMPLOYMENT_V1,
   SAMPLE_ADVERSARIAL_INJECTION,
+  SAMPLE_CUAD_COMMERCIAL,
+  SAMPLE_STATUTORY_STRESS_TEST,
 } from './data/sampleContracts';
 
 export default function App() {
@@ -86,6 +88,12 @@ export default function App() {
     } else if (sampleKey === 'employment') {
       content = SAMPLE_EMPLOYMENT_V1;
       filename = 'Sample_Employment_Contract.txt';
+    } else if (sampleKey === 'cuad') {
+      content = SAMPLE_CUAD_COMMERCIAL;
+      filename = 'cuad_commercial_contract_sample.txt';
+    } else if (sampleKey === 'statutory') {
+      content = SAMPLE_STATUTORY_STRESS_TEST;
+      filename = 'statutory_citation_stress_test.txt';
     } else if (sampleKey === 'adversarial') {
       content = SAMPLE_ADVERSARIAL_INJECTION;
       filename = 'Adversarial_Prompt_Injection_Contract.txt';

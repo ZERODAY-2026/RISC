@@ -3,6 +3,7 @@ import re
 import pymupdf as fitz
 from typing import List, Tuple, Optional
 from backend.models import Clause, DocumentMetadata
+from backend.datasets.cuad_taxonomy import classify_cuad_category, CUAD_CAVEAT
 
 # Adversarial prompt-injection patterns common in malicious documents
 ADVERSARIAL_PATTERNS = [
@@ -174,6 +175,7 @@ def parse_clauses_from_pages(pages_data: List[Tuple[int, str]]) -> List[Clause]:
                             char_start=start,
                             char_end=end,
                             ambiguity_flags=extract_ambiguities(merged),
+                            cuad_category=classify_cuad_category(merged, current_title),
                         )
                     )
                     clause_counter += 1
@@ -199,6 +201,7 @@ def parse_clauses_from_pages(pages_data: List[Tuple[int, str]]) -> List[Clause]:
                     char_start=start,
                     char_end=end,
                     ambiguity_flags=extract_ambiguities(merged),
+                    cuad_category=classify_cuad_category(merged, current_title),
                 )
             )
             clause_counter += 1
@@ -277,6 +280,8 @@ def extract_document_metadata(doc_name: str, full_text: str, clauses: List[Claus
 
     pages = max([c.page_number for c in clauses]) if clauses else 1
 
+    is_cuad = "cuad" in doc_name.lower() or "commercial" in doc_name.lower() or doc_type == "Commercial Contract"
+
     return DocumentMetadata(
         document_name=doc_name,
         doc_type=doc_type,
@@ -291,6 +296,8 @@ def extract_document_metadata(doc_name: str, full_text: str, clauses: List[Claus
         financial_penalties=penalties,
         lock_in_periods=lock_in_periods,
         high_risk_clauses_count=high_risk_count,
+        is_cuad_benchmark=is_cuad,
+        cuad_caveat=CUAD_CAVEAT if is_cuad else None,
     )
 
 

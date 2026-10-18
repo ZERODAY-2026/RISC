@@ -1,0 +1,30 @@
+MASTER SERVICES AND SOFTWARE LICENSE AGREEMENT
+
+This Master Services and Software License Agreement ("Agreement") is entered into and made effective as of 15th January 2026 ("Effective Date"), by and between OmniTech Enterprise Solutions Inc., a Delaware corporation having its principal office at 100 Technology Plaza, San Francisco, California ("Licensor"), and Zenith Global Logistics Private Limited, a company organized under the laws of India having its registered office at Brigade Road, Bengaluru, Karnataka ("Licensee").
+
+1. LICENSE GRANT AND EXCLUSIVITY
+Subject to the terms and conditions hereof, Licensor hereby grants to Licensee a non-transferable, non-exclusive, irrevocable commercial license during the term to deploy and execute the Licensed Software within the Territory. Licensee shall not sublicense, distribute, or reverse-engineer the source code.
+
+2. INTELLECTUAL PROPERTY OWNERSHIP ASSIGNMENT
+All right, title, and interest in and to any custom modules, algorithmic extensions, deliverables, inventions, discoveries, and documentation created or authored under this Agreement shall constitute works made for hire and are hereby assigned exclusively to Licensor. Licensee retains ownership of its pre-existing customer data.
+
+3. RESTRICTIVE COVENANTS AND NON-COMPETE
+During the term of this Agreement and for a period of 12 months following expiration or termination, Licensee shall not directly or indirectly engage in, develop, or market any competing commercial enterprise software product that duplicates the core routing algorithms of Licensor within India or North America.
+
+4. LIMITATION OF LIABILITY AND CAPPED DAMAGES
+To the maximum extent permitted by applicable law, Licensor's aggregate cumulative liability arising out of or related to this Agreement shall be strictly capped at and shall not exceed the total fees actually paid by Licensee to Licensor in the preceding twelve (12) months. Neither party shall be liable for indirect, incidental, or consequential damages.
+
+5. LIQUIDATED DAMAGES FOR UNLAWFUL BREACH
+In the event of an intentional material breach of the confidentiality or non-compete covenants by Licensee, Licensee agrees to pay as liquidated damages the sum of INR 10,000,000/- (Ten Million Indian Rupees). Both parties agree this represents a reasonable pre-estimate of damages and not a penalty.
+
+6. AUDIT RIGHTS AND INSPECTION
+Upon reasonable advance notice of not less than ten (10) business days, Licensor or its independent certified public accountant shall have the right to inspect and audit Licensee's server logs, deployment nodes, and books and records to verify compliance with license usage metrics.
+
+7. TERMINATION FOR CONVENIENCE AND NOTICE PERIOD
+Either party may terminate this Agreement for convenience and without cause upon providing ninety (90) days prior written notice to the other party. In addition, Licensor reserves the unilateral right to terminate immediately if Licensee undergoes an unauthorized change of control.
+
+8. ANTI-ASSIGNMENT
+Licensee shall not assign, transfer, delegate, or pledge any of its rights or obligations under this Agreement without the prior written consent of Licensor.
+
+9. GOVERNING LAW AND DISPUTE RESOLUTION
+This Agreement shall be governed by and construed in accordance with the laws of India, without regard to conflict of law principles. Any dispute, controversy, or claim shall be submitted to binding arbitration in Bengaluru in accordance with the Arbitration and Conciliation Act, 1996.

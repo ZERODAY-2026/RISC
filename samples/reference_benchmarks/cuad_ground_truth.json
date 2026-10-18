@@ -1,0 +1,63 @@
+{
+  "benchmark_name": "CUAD Commercial Contract Expert Evaluation Sample",
+  "reference": "Hendrycks et al., NeurIPS 2021 (CC BY 4.0)",
+  "document_name": "cuad_commercial_contract_sample.txt",
+  "document_type": "Commercial Corporate Agreement",
+  "mandatory_caveat": "CUAD Benchmark (CC BY 4.0 — Hendrycks et al., NeurIPS 2021): Commercial corporate agreement used to benchmark clause extraction against expert labels; not presented as proof for consumer rental/employment documents.",
+  "expert_labels": [
+    {
+      "section_number": 1,
+      "expected_category": "License Grant",
+      "keywords": ["non-transferable", "non-exclusive", "commercial license"],
+      "expert_note": "Governs software deployment grant and usage boundaries."
+    },
+    {
+      "section_number": 2,
+      "expected_category": "IP Ownership Assignment",
+      "keywords": ["intellectual property", "works made for hire", "assigned exclusively"],
+      "expert_note": "Assignment of bespoke algorithmic deliverables to Licensor."
+    },
+    {
+      "section_number": 3,
+      "expected_category": "Non-Compete",
+      "keywords": ["non-compete", "competing commercial enterprise", "12 months"],
+      "expert_note": "Post-termination restriction on commercial enterprise products."
+    },
+    {
+      "section_number": 4,
+      "expected_category": "Cap On Liability",
+      "keywords": ["strictly capped", "limitation of liability", "shall not exceed"],
+      "expert_note": "12-month trailing fee cap on aggregate damages."
+    },
+    {
+      "section_number": 5,
+      "expected_category": "Liquidated Damages",
+      "keywords": ["liquidated damages", "pre-estimate of damages", "10,000,000"],
+      "expert_note": "Fixed sum stipulated for breach of covenant."
+    },
+    {
+      "section_number": 6,
+      "expected_category": "Audit Rights",
+      "keywords": ["audit rights", "inspect and audit", "books and records"],
+      "expert_note": "Licensor right to verify node counts on 10 days notice."
+    },
+    {
+      "section_number": 7,
+      "expected_category": "Termination For Convenience",
+      "keywords": ["termination for convenience", "90 days prior written notice", "unilateral right"],
+      "expert_note": "Mutual 90-day convenience termination and change-of-control clause."
+    },
+    {
+      "section_number": 8,
+      "expected_category": "Anti-Assignment",
+      "keywords": ["anti-assignment", "shall not assign", "prior written consent"],
+      "expert_note": "Prohibition of transfer without written approval."
+    },
+    {
+      "section_number": 9,
+      "expected_category": "Governing Law",
+      "keywords": ["governing law", "laws of india", "arbitration and conciliation"],
+      "expert_note": "Governing Indian law and Bengaluru seat of arbitration."
+    }
+  ]
+}

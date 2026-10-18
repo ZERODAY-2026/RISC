@@ -7,6 +7,12 @@ from backend.config import OLLAMA_BASE_URL, DEFAULT_GEMMA_MODEL, FALLBACK_GEMMA_
 from backend.models import Clause, TriageCard, SafeEscalationCard
 from backend.guardrails import verify_quote_in_clause, is_legal_advice_query, build_safe_escalation_card
 from backend.ingestion import sanitize_contract_text
+from backend.datasets import (
+    classify_cuad_category,
+    CUAD_CAVEAT,
+    match_india_code_context,
+    match_open_india_law_context,
+)
 
 # System prompt strictly commanding Gemma to ground claims and maintain non-lawyer boundary
 TRIAGE_SYSTEM_PROMPT = """You are LexGuard, an on-device legal document triage assistant powered by Gemma.
@@ -136,6 +142,10 @@ class GemmaLocalClient:
             if severity == "LOW":
                 severity = "MEDIUM"
 
+        cuad_cat = clause.cuad_category or classify_cuad_category(text, clause.section_title)
+        india_code_ref = match_india_code_context(text, cuad_cat)
+        open_india_law_ctx = match_open_india_law_context(text, cuad_cat)
+
         return TriageCard(
             clause_id=clause.clause_id,
             page_number=clause.page_number,
@@ -145,6 +155,10 @@ class GemmaLocalClient:
             potential_ambiguities_and_risks=risks,
             confidence_badge=badge,
             severity=severity,
+            cuad_category=cuad_cat,
+            cuad_caveat=CUAD_CAVEAT,
+            india_code_ref=india_code_ref,
+            open_india_law_context=open_india_law_ctx,
         )
 
     async def triage_document_clauses(self, clauses: List[Clause]) -> List[TriageCard]:

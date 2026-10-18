@@ -2,6 +2,8 @@
 import re
 from typing import List, Tuple, Optional, Dict
 from backend.models import Clause, SafeEscalationCard
+from backend.datasets.indiacode_statutes import match_india_code_context, INDIA_CODE_CAVEAT
+from backend.datasets.open_india_law import match_open_india_law_context, OPEN_INDIA_LAW_CAVEAT
 
 # Enforceability and legal advice intent triggers
 LEGAL_ADVICE_TRIGGERS = [
@@ -187,6 +189,10 @@ def build_safe_escalation_card(query: str, relevant_clauses: List[Clause]) -> Sa
             "Are there standard remedies or counter-claims available if the opposing party enforces this provision unfairly?"
         ]
 
+    combined_query_and_clauses = query + " " + " ".join(c.verbatim_text for c in relevant_clauses)
+    india_code_citation = match_india_code_context(combined_query_and_clauses)
+    open_india_law_context = match_open_india_law_context(combined_query_and_clauses)
+
     return SafeEscalationCard(
         trigger_reason=(
             "Legal validity, enforceability, and litigation outcomes cannot be decided from document text alone. "
@@ -195,5 +201,11 @@ def build_safe_escalation_card(query: str, relevant_clauses: List[Clause]) -> Sa
         relevant_clauses=c_ids,
         verbatim_citations=verbatim_citations,
         why_jurisdiction_dependent=statutory_explanation,
-        questions_for_lawyer=lawyer_questions
+        questions_for_lawyer=lawyer_questions,
+        india_code_citation=india_code_citation,
+        open_india_law_context=open_india_law_context,
+        statutory_non_lawyer_disclaimer=(
+            "Statutes and court precedents provide legislative/judicial context and get amended; "
+            "LexGuard-Local never derives legal validity conclusions from them."
+        ),
     )

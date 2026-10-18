@@ -12,6 +12,11 @@ setup:
 	./venv/bin/pip install -r requirements.txt
 	@echo "Setup complete. Virtual environment ready in ./venv"
 
+# Setup datasets: downloads/verifies reference datasets during online setup (Participant Guide Page 7)
+setup-datasets:
+	@echo "=== Verifying / Fetching PS2 Reference Datasets (Page 8) ==="
+	$(PYTHON) scripts/fetch_reference_datasets.py --verify
+
 # Run target: enforces strict offline environment variables
 run-offline:
 	@echo "=== Launching LexGuard-Local in Strict Offline Mode ==="

@@ -247,7 +247,9 @@ export default function WorkspaceView({
               <option value="">Load sample contract…</option>
               <option value="rental">Sample 1: Rental (Lock-in &amp; Penalties)</option>
               <option value="employment">Sample 2: Employment (Non-Compete)</option>
-              <option value="adversarial">Sample 3: Adversarial Injection</option>
+              <option value="cuad">Resource 1: CUAD Commercial Agreement (CC BY 4.0)</option>
+              <option value="statutory">Resource 2 &amp; 3: Statutory Citation Stress-Test</option>
+              <option value="adversarial">Sample 5: Adversarial Injection</option>
             </select>
             <button
               onClick={() => {
@@ -307,6 +309,23 @@ export default function WorkspaceView({
           TRACK PS2 &bull; GATE L2 COMPLIANT
         </span>
       </div>
+
+      {/* CUAD Commercial Benchmark Mandatory Caveat Banner */}
+      {metadata?.is_cuad_benchmark && (
+        <div className="bg-blue-50 border-b border-blue-200 px-5 py-2 text-[11px] text-blue-950 flex items-center justify-between shadow-2xs flex-shrink-0">
+          <div className="flex items-center gap-2 max-w-5xl">
+            <span className="px-1.5 py-0.5 rounded bg-blue-600 text-white font-mono text-[9.5px] font-bold">
+              RESOURCE 1 ACTIVE
+            </span>
+            <span>
+              <strong>CUAD Benchmark (CC BY 4.0 — Hendrycks et al., NeurIPS 2021):</strong> Commercial corporate agreement used to benchmark clause extraction against expert labels; not presented as proof for consumer rental/employment documents.
+            </span>
+          </div>
+          <span className="font-mono text-[10px] text-blue-800 bg-blue-100 px-2 py-0.5 rounded border border-blue-200 font-semibold">
+            41 Categories Evaluated
+          </span>
+        </div>
+      )}
 
       {/* ─────────────────────────────────────────────────────────────
           3. MAIN WORKSPACE — BALANCED SPLIT SCREEN
@@ -778,39 +797,108 @@ export default function WorkspaceView({
                             </div>
                           </div>
 
-                          {/* 1. Explicit Quote */}
-                          <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/70">
-                            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">
-                              What the Document Explicitly States (Page {card.page_number})
-                            </span>
-                            <p className="text-xs font-serif italic text-slate-800 leading-relaxed">
+                          {/* LAYER 1: Verbatim Contract Quote Verified + CUAD Tag (Green Card) */}
+                          <div className="p-3.5 rounded-xl bg-emerald-50/40 border border-emerald-200/80 space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 flex items-center gap-1.5">
+                                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                                <span>Layer 1 &bull; Verbatim Contract Quote Verified (Page {card.page_number})</span>
+                              </span>
+                              {card.cuad_category && (
+                                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 border border-blue-200 shadow-2xs">
+                                  CUAD Category: {card.cuad_category}
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-xs font-serif italic text-slate-800 leading-relaxed bg-white/80 p-2.5 rounded-lg border border-emerald-100">
                               "{card.explicit_text}"
                             </p>
                           </div>
 
-                          {/* 2. Plain Language Explanation */}
-                          <div className="p-3.5 rounded-xl bg-emerald-50/50 border border-emerald-200/70">
-                            <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 block mb-1">
-                              Plain-Language Explanation (For Non-Lawyer)
+                          {/* LAYER 2: Plain Language Explanation (White/Slate Card) */}
+                          <div className="p-3.5 rounded-xl bg-slate-50/70 border border-slate-200">
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600 block mb-1">
+                              Layer 2 &bull; Plain-Language Explanation (Obligations, Deadlines &amp; Penalties)
                             </span>
-                            <p className="text-xs text-emerald-950 leading-relaxed font-sans font-medium">
+                            <p className="text-xs text-slate-900 leading-relaxed font-sans font-medium">
                               {card.plain_language_explanation}
                             </p>
                           </div>
 
-                          {/* 3. Potential Ambiguities & Observations */}
-                          {card.potential_ambiguities_and_risks && card.potential_ambiguities_and_risks.length > 0 && (
-                            <div className="p-3.5 rounded-xl bg-amber-50/50 border border-amber-200/70">
-                              <span className="text-[10px] font-bold uppercase tracking-wider text-amber-800 block mb-1">
-                                Triage Observations (Not Legal Advice)
+                          {/* LAYER 3: Safe Escalation & Statutory Context (Amber/Indigo Card) */}
+                          <div className="p-3.5 rounded-xl bg-amber-50/30 border border-amber-200 space-y-2.5">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[10px] font-bold uppercase tracking-wider text-amber-900 flex items-center gap-1.5">
+                                <ShieldAlert className="w-3.5 h-3.5 text-amber-600" />
+                                <span>Layer 3 &bull; Safe Escalation &amp; Statutory Context (Not Legal Advice)</span>
                               </span>
-                              <ul className="list-disc list-inside space-y-1 text-xs text-amber-950 font-medium">
-                                {card.potential_ambiguities_and_risks.map((r, i) => (
-                                  <li key={i}>{r}</li>
-                                ))}
-                              </ul>
+                              <span className="text-[9.5px] font-mono px-2 py-0.5 rounded bg-amber-100 text-amber-900 font-bold border border-amber-200">
+                                ADVOCATE CONSULTATION REQUIRED
+                              </span>
                             </div>
-                          )}
+
+                            {/* Triage Observations */}
+                            {card.potential_ambiguities_and_risks && card.potential_ambiguities_and_risks.length > 0 && (
+                              <div className="bg-white/80 p-2.5 rounded-lg border border-amber-200/70">
+                                <span className="text-[10px] font-bold uppercase tracking-wider text-amber-800 block mb-1">
+                                  Identified Ambiguities &amp; Disputed Questions:
+                                </span>
+                                <ul className="list-disc list-inside space-y-1 text-xs text-amber-950 font-medium">
+                                  {card.potential_ambiguities_and_risks.map((r, i) => (
+                                    <li key={i}>{r}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+
+                            {/* Resource 2: India Code Section Reference */}
+                            {card.india_code_ref && (
+                              <div className="p-2.5 rounded-lg bg-indigo-50/70 border border-indigo-200 space-y-1">
+                                <div className="flex items-center justify-between">
+                                  <span className="font-bold text-[11px] text-indigo-950 flex items-center gap-1.5">
+                                    <span>📘 Resource 2 &bull; India Code Section Reference (indiacode.gov.in)</span>
+                                  </span>
+                                  <span className="font-mono text-[10px] px-2 py-0.5 rounded bg-indigo-100 text-indigo-800 font-bold border border-indigo-200">
+                                    {card.india_code_ref.act} &bull; {card.india_code_ref.section}
+                                  </span>
+                                </div>
+                                <p className="text-[11px] text-indigo-900 leading-snug">
+                                  <strong>Subject:</strong> {card.india_code_ref.subject} &mdash; {card.india_code_ref.relevance}
+                                </p>
+                                <p className="text-[10px] text-indigo-700 font-mono pt-1 border-t border-indigo-100">
+                                  ⚠️ Caveat: Cited strictly for section-level issue spotting. Statutes are not contracts, may be amended, and LexGuard-Local never derives legal validity conclusions from them.
+                                </p>
+                              </div>
+                            )}
+
+                            {/* Resource 3: Open India Law Dispute Context */}
+                            {card.open_india_law_context && (
+                              <div className="p-2.5 rounded-lg bg-blue-50/70 border border-blue-200 space-y-1">
+                                <div className="flex items-center justify-between">
+                                  <span className="font-bold text-[11px] text-blue-950 flex items-center gap-1.5">
+                                    <span>⚖️ Resource 3 &bull; Open India Law (vaquill/open-india-law v2026.08 Snapshot)</span>
+                                  </span>
+                                  <span className="font-mono text-[9.5px] px-1.5 py-0.5 rounded bg-blue-100 text-blue-800 font-bold border border-blue-200">
+                                    CC BY 4.0 &bull; Dispute Context
+                                  </span>
+                                </div>
+                                <p className="text-[11px] text-blue-900 leading-snug">
+                                  {card.open_india_law_context.landmark_precedent && (
+                                    <span className="font-bold">{card.open_india_law_context.landmark_precedent}: </span>
+                                  )}
+                                  {card.open_india_law_context.dispute_summary || card.open_india_law_context.relevance}
+                                </p>
+                                {card.open_india_law_context.advocate_action && (
+                                  <p className="text-[11px] text-blue-950 bg-white/70 p-1.5 rounded border border-blue-100 font-medium">
+                                    <strong>Counsel Action:</strong> {card.open_india_law_context.advocate_action}
+                                  </p>
+                                )}
+                                <p className="text-[10px] text-blue-700 font-mono pt-1 border-t border-blue-100">
+                                  ⚠️ Caveat: Historical point-in-time snapshot of enactments &amp; court judgments used for statutory retrieval context; not current law and not legal advice.
+                                </p>
+                              </div>
+                            )}
+                          </div>
                         </div>
                       );
                     })}
@@ -985,6 +1073,52 @@ export default function WorkspaceView({
                         <p className="text-xs text-rose-900/90 leading-relaxed">
                           <strong>Statutory Context:</strong> {qaResult.escalation_card.why_jurisdiction_dependent}
                         </p>
+
+                        {/* Resource 2 Reference Box */}
+                        {qaResult.escalation_card.india_code_citation && (
+                          <div className="p-2.5 rounded-lg bg-white/90 border border-indigo-200 text-xs text-indigo-950 space-y-1">
+                            <div className="flex items-center justify-between">
+                              <span className="font-bold text-[11px] text-indigo-900">
+                                📘 Resource 2 &bull; India Code Statutory Reference
+                              </span>
+                              <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-800 font-bold border border-indigo-200">
+                                {qaResult.escalation_card.india_code_citation.act} &bull; {qaResult.escalation_card.india_code_citation.section}
+                              </span>
+                            </div>
+                            <p className="text-[11px] text-indigo-900 leading-snug">
+                              <strong>Subject:</strong> {qaResult.escalation_card.india_code_citation.subject} &mdash; {qaResult.escalation_card.india_code_citation.relevance}
+                            </p>
+                            <p className="text-[10px] text-indigo-700 font-mono pt-0.5 border-t border-indigo-100">
+                              ⚠️ Statutes get amended; AI cannot declare contract enforceability.
+                            </p>
+                          </div>
+                        )}
+
+                        {/* Resource 3 Reference Box */}
+                        {qaResult.escalation_card.open_india_law_context && (
+                          <div className="p-2.5 rounded-lg bg-white/90 border border-blue-200 text-xs text-blue-950 space-y-1">
+                            <div className="flex items-center justify-between">
+                              <span className="font-bold text-[11px] text-blue-900">
+                                ⚖️ Resource 3 &bull; Open India Law (vaquill/open-india-law v2026.08 Snapshot)
+                              </span>
+                              <span className="font-mono text-[9.5px] px-1.5 py-0.5 rounded bg-blue-100 text-blue-800 font-bold border border-blue-200">
+                                CC BY 4.0 Snapshot
+                              </span>
+                            </div>
+                            <p className="text-[11px] text-blue-900 leading-snug">
+                              {qaResult.escalation_card.open_india_law_context.landmark_precedent && (
+                                <span className="font-bold">{qaResult.escalation_card.open_india_law_context.landmark_precedent}: </span>
+                              )}
+                              {qaResult.escalation_card.open_india_law_context.dispute_summary || qaResult.escalation_card.open_india_law_context.relevance}
+                            </p>
+                            {qaResult.escalation_card.open_india_law_context.advocate_action && (
+                              <p className="text-[10.5px] text-blue-950 font-medium">
+                                <strong>Counsel Guidance:</strong> {qaResult.escalation_card.open_india_law_context.advocate_action}
+                              </p>
+                            )}
+                          </div>
+                        )}
+
                         <div className="pt-2 border-t border-rose-200/60">
                           <strong className="text-xs text-rose-950 block mb-1">
                             Recommended Questions to Ask Your Advocate:
