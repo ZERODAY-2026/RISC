@@ -16,7 +16,13 @@ __pycache__/
 htmlcov/
 dist/
 build/
-*.egg-info/
+# Node & Build artifacts
+node_modules/
+.vite/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
 # Sensitive data, uploaded user documents, and private logs
 uploads/

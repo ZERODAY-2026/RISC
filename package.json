@@ -1,0 +1,37 @@
+{
+  "name": "ps2",
+  "version": "1.0.0",
+  "description": "[![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) [![ZeroDay OSS Hacktoberfest 2026](https://img.shields.io/badge/ZeroDay_OSS_Hacktoberfest_2026-Track_PS2-green.svg)](#) [![Privacy Guarantee](https://img.shields.io/badge/Network_Isolation-100%25_Air--Gapped-emerald.svg)](#) [![Local LLM](https://img.shields.io/badge/Model-Google_Gemma_On--Device-purple.svg)](#) [![Python 3.11+](https://img.shields.io/badge/Python-3.11+-blue.svg)](#)",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZERODAY-2026/RISC.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/ZERODAY-2026/RISC/issues"
+  },
+  "homepage": "https://github.com/ZERODAY-2026/RISC#readme",
+  "dependencies": {
+    "lucide-react": "^1.59.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@vitejs/plugin-react": "^6.1.2",
+    "tailwindcss": "^4.3.3",
+    "vite": "^8.3.4"
+  }
+}
