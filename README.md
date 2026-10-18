@@ -50,33 +50,33 @@ Legal agreements contain dense legalese that ordinary individuals cannot deciphe
 
 ```mermaid
 graph TD
-    UserDoc[User Contract: PDF / Plain Text] --> Ingestion[PyMuPDF / TXT Deterministic Chunker]
+    UserDoc["User Contract: PDF or Plain Text"] --> Ingestion["PyMuPDF / TXT Deterministic Chunker"]
     
-    subgraph Security & Quarantine Boundary
-        Ingestion --> InjectionShield{Prompt Injection Detector}
-        InjectionShield -->|Malicious Pattern Found| SecurityBanner[Security Alert Banner & Quarantine]
-        InjectionShield -->|Safe / Sanitized| UntrustedWrap[Wrap inside untrusted_contract_text]
+    subgraph Quarantine["Security and Quarantine Boundary"]
+        Ingestion --> InjectionShield{"Prompt Injection Detector"}
+        InjectionShield -->|"Malicious Pattern Found"| SecurityBanner["Security Alert Banner and Quarantine"]
+        InjectionShield -->|"Safe / Sanitized"| UntrustedWrap["Wrap inside untrusted_contract_text tags"]
     end
 
-    UntrustedWrap --> ClauseBuilder[Deterministic Clause Generator CL-001, CL-002...]
-    ClauseBuilder --> Indexer[Local Hybrid Index: BM25Okapi + Vocab Index]
+    UntrustedWrap --> ClauseBuilder["Deterministic Clause Generator (CL-001, CL-002...)"]
+    ClauseBuilder --> Indexer["Local Hybrid Index: BM25Okapi + Vocab Index"]
     
-    subgraph Deterministic Guardrails Middleware
-        Query[User Question] --> IntentRouter{Intent Classifier}
-        IntentRouter -->|Legality / Validity / Lawsuit Query| EscalationEngine[Safe Escalation Engine: Statutory Citations + 3 Advocate Questions]
-        IntentRouter -->|Factual / Operative Query| HybridRetriever[Local BM25 Search]
+    subgraph Guardrails["Deterministic Guardrails Middleware"]
+        Query["User Question"] --> IntentRouter{"Intent Classifier"}
+        IntentRouter -->|"Legality or Validity Query"| EscalationEngine["Safe Escalation Engine: Statutory Citations + 3 Advocate Questions"]
+        IntentRouter -->|"Factual or Operative Query"| HybridRetriever["Local BM25 Search"]
         
-        HybridRetriever --> SilenceCheck{Relevance Threshold & Vocab Overlap}
-        SilenceCheck -->|Zero / Below Threshold| SilenceHandler[Document is Silent Notice]
-        SilenceCheck -->|Relevant Clauses Found| GemmaEngine[Local Gemma 3n/4 via Ollama]
+        HybridRetriever --> SilenceCheck{"Relevance Threshold and Vocab Overlap"}
+        SilenceCheck -->|"Zero / Below Threshold"| SilenceHandler["Document is Silent Notice"]
+        SilenceCheck -->|"Relevant Clauses Found"| GemmaEngine["Local Gemma 3n/4 via Ollama"]
     end
 
-    GemmaEngine --> QuoteVerifier{Deterministic Substring Verifier}
-    QuoteVerifier -->|Exact Substring Verified| VerifiedOutput[Grounded Response with Verified Badge]
-    QuoteVerifier -->|Discrepancy Detected| FallbackCorrection[Exact Match Fallback & Flagging]
+    GemmaEngine --> QuoteVerifier{"Deterministic Substring Verifier"}
+    QuoteVerifier -->|"Exact Substring Verified"| VerifiedOutput["Grounded Response with Verified Badge"]
+    QuoteVerifier -->|"Discrepancy Detected"| FallbackCorrection["Exact Match Fallback and Flagging"]
 
-    subgraph Split-Screen Presentation Layer
-        VerifiedOutput --> WebUI[Split-Screen Workspace: Left Doc Viewer | Right Triage Tabs]
+    subgraph Presentation["Split-Screen Presentation Layer"]
+        VerifiedOutput --> WebUI["Split-Screen Workspace: Left Doc Viewer and Right Triage Tabs"]
         EscalationEngine --> WebUI
         SilenceHandler --> WebUI
         SecurityBanner --> WebUI
