@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import LandingPage from './components/LandingPage';
 import WorkspaceView from './components/WorkspaceView';
 import Toast from './components/Toast';
+import LiquidRetinaWipeModal from './components/LiquidRetinaWipeModal';
 import {
   SAMPLE_RENTAL_AGREEMENT,
   SAMPLE_EMPLOYMENT_V1,
@@ -19,6 +20,10 @@ export default function App() {
   // Ingestion animation states
   const [isProcessing, setIsProcessing] = useState(false);
   const [processingStep, setProcessingStep] = useState(1);
+
+  // Liquid Retina Wipe Modal states
+  const [isWipeModalOpen, setIsWipeModalOpen] = useState(false);
+  const [isWiping, setIsWiping] = useState(false);
 
   // Fetch telemetry on load
   useEffect(() => {
@@ -74,7 +79,7 @@ export default function App() {
       clearTimeout(stepTimer1);
       clearTimeout(stepTimer2);
       setIsProcessing(false);
-      alert(`Document Processing Error: ${err.message}`);
+      setToast({ message: `Document Processing Error: ${err.message}`, type: 'error' });
     }
   };
 
@@ -106,28 +111,37 @@ export default function App() {
     await uploadAndProcessFile(file);
   };
 
-  const handleWipeSession = async () => {
-    if (
-      !window.confirm(
-        'Are you sure you want to securely wipe the active document and all in-memory indexes from RAM?'
-      )
-    ) {
-      return;
-    }
+  // Open the Liquid Retina wipe confirmation modal
+  const handlePromptWipeSession = () => {
+    setIsWipeModalOpen(true);
+  };
 
+  // Execute cryptographic RAM zeroization & session wipe
+  const executeWipeSession = async () => {
+    setIsWiping(true);
     try {
       const res = await fetch('/api/wipe', { method: 'POST' });
       await res.json();
 
-      setDocumentData(null);
-      setCurrentView('landing');
-      setToast({
-        message: 'Session wiped from local memory',
-        type: 'success',
-      });
-      fetchPrivacyAudit();
+      // Brief animation pause to show deliberate zeroization
+      setTimeout(() => {
+        setIsWiping(false);
+        setIsWipeModalOpen(false);
+        setDocumentData(null);
+        setCurrentView('landing');
+        setToast({
+          message: 'Session wiped: Ephemeral keys zeroized & RAM memory purged',
+          type: 'success',
+        });
+        fetchPrivacyAudit();
+      }, 400);
     } catch (err) {
-      alert(`Error wiping session: ${err.message}`);
+      setIsWiping(false);
+      setIsWipeModalOpen(false);
+      setToast({
+        message: `Error wiping session: ${err.message}`,
+        type: 'error',
+      });
     }
   };
 
@@ -147,7 +161,7 @@ export default function App() {
         <WorkspaceView
           documentData={documentData}
           onBackToLanding={() => setCurrentView('landing')}
-          onWipeSession={handleWipeSession}
+          onWipeSession={handlePromptWipeSession}
           onUploadFile={uploadAndProcessFile}
           onLoadSample={handleLoadSample}
           auditData={auditData}
@@ -155,7 +169,16 @@ export default function App() {
         />
       )}
 
+      {/* High-definition Liquid Retina Session Wipe Modal */}
+      <LiquidRetinaWipeModal
+        isOpen={isWipeModalOpen}
+        onClose={() => !isWiping && setIsWipeModalOpen(false)}
+        onConfirm={executeWipeSession}
+        isWiping={isWiping}
+      />
+
       <Toast toast={toast} onClose={() => setToast(null)} />
     </>
   );
 }
+
